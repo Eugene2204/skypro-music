@@ -9,7 +9,7 @@ import { Protection } from './components/Protection/Protection.jsx';
 import React from 'react';
 
 export const AppRoutes = ({ user, isLoading, setIsLoading, isPlayerVisible, setIsPlayerVisible,
-    loadingTracksError, setIsPlaying, isPlaying, handleStart, handleStop, togglePlay,}) => {
+    loadingTracksError, setLoadingTracksError, setIsPlaying, isPlaying, handleStart, handleStop, togglePlay,}) => {
     return(
         <Routes>
             <Route path="/login" element={<Login />}></Route>
@@ -17,6 +17,18 @@ export const AppRoutes = ({ user, isLoading, setIsLoading, isPlayerVisible, setI
             <Route path="*" element={<NotFoundPage />}></Route>
             <Route element={<Protection isAllowed={Boolean(user)} />}>
                 <Route path="/favorites" element={<MyTracksPage />}></Route>
+                <Route
+                    path="/favorites"
+                    element={
+                        <MyTracksPage
+                            isLoading={isLoading}
+                            setIsPlayerVisible={setIsPlayerVisible}
+                            loadingTracksError={loadingTracksError}
+                            setIsLoading={setIsLoading}
+                            setLoadingTracksError={setLoadingTracksError}
+                        />
+                    }
+                ></Route>
                 <Route
                     path="/"
                     element={
@@ -26,6 +38,7 @@ export const AppRoutes = ({ user, isLoading, setIsLoading, isPlayerVisible, setI
                             isPlayerVisible={isPlayerVisible}
                             setIsPlayerVisible={setIsPlayerVisible}
                             loadingTracksError={loadingTracksError}
+                            setLoadingTracksError={setLoadingTracksError}
                             setIsPlaying={setIsPlaying}
                             isPlaying={isPlaying}
                             handleStart={handleStart}

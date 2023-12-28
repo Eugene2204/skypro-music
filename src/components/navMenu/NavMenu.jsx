@@ -20,7 +20,7 @@ export const NavMenu = () => {
     return(
         <S.MainNav>
             <S.NavLogo>
-              <S.LogoImg className="_btn" src="img/logo.png" alt="logo" />
+              <S.LogoImg className="_btn" src="img/logo.png" alt="logo" onClick={() => navigate('/')} />
             </S.NavLogo>
             <S.NavBurger className="_btn" onClick={toggleVisibility}>
               <S.BurgerLine></S.BurgerLine>

@@ -12,9 +12,9 @@ export const Sidebar = ({isLoading}) => {
   
   const navigate = useNavigate()
   const handleLogout = () => {
-    localStorage.removeItem('user')
-    navigate('/login')
-}
+      localStorage.removeItem('user')
+      navigate('/login')
+  }
 
   const [userData] = useContext(UserContext)
 
@@ -49,7 +49,7 @@ return(
 return (
 <S.MainSidebar>
             <S.SidebarPersonal>
-              <S.SidebarPersonalName>{userData}</S.SidebarPersonalName>
+              <S.SidebarPersonalName>{userData ?? 'Не авторизован'}</S.SidebarPersonalName>
               <S.SidebarIcon onClick={handleLogout}>
                 <svg alt="logout">
                   <use xlinkHref="img/icon/sprite.svg#logout"></use>

@@ -2,55 +2,57 @@ import React from 'react';
 import { GlobalStyle } from './components/Global.styles/Global.styles.js';
 import * as S from './App.styles.js';
 import { AppRoutes } from './routes.jsx';
-import { getAllTracks } from './Api.jsx';
 import { AudioPlayer } from './components/audioPlayer/audioPlayer.jsx';
 import { useState, useEffect, useRef } from 'react';
+import { getAllTracks } from './Api.jsx'
 import { UserContext } from './Authorization.jsx';
-import { useDispatch, useSelector } from 'react-redux';
-import { setTracks } from './store/slices.jsx';
+import { useDispatch, useSelector } from 'react-redux'
+import { setTracks } from './store/slices.jsx'
+
 
 export const App = () => {
 
   const dispatch = useDispatch()
-  const activeTrack = useSelector((state) => state.tracks.activeTrack)
+    const activeTrack = useSelector((state) => state.tracks.activeTrack)
+    const [isLoading, setIsLoading] = useState(true)
+    const [isPlayerVisible, setIsPlayerVisible] = useState(true)
+    const [loadingTracksError, setLoadingTracksError] = useState(false)
+    const [isPlaying, setIsPlaying] = useState(false)
+    const [userData, setUserData] = useState(
+        JSON.parse(localStorage.getItem('user')) ?? 'Не авторизован',
+    )
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [isPlayerVisible, setIsPlayerVisible] = useState(false);
-  const [loadingTracksError, setLoadingTracksError] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [userData, setUserData] = useState(
-    JSON.parse(JSON.stringify(localStorage.getItem('user'))) ?? 'Не авторизован',)
+    const audioRef = useRef(null)
 
-  const audioRef = useRef(null)
+    const handleStart = () => {
+        audioRef.current.play()
+        setIsPlaying(true)
+    }
+
+    const handleStop = () => {
+        audioRef.current.pause()
+        setIsPlaying(false)
+    }
+
+    const togglePlay = isPlaying ? handleStop : handleStart
 
     useEffect(() => {
-      getAllTracks()
-      .then((tracks) => {
-        dispatch(setTracks({ tracks }))
-    })
-        .catch((error) => {
-          setLoadingTracksError(error.message)
-      })
-      .finally(() => setIsLoading(false))
-  }, [dispatch]);
+        if (audioRef.current) {
+            handleStart()
+        }
+    }, [activeTrack])
 
-  const handlePlay = () => {
-    audioRef.current.play()
-    setIsPlaying(true)
-}
+    useEffect(() => {
+        getAllTracks()
+            .then((tracks) => {
+                dispatch(setTracks({ tracks }))
+            })
+            .catch((error) => {
+                setLoadingTracksError(error.message)
+            })
+            .finally(() => setIsLoading(false))
+    }, [dispatch])
 
-const handlePause = () => {
-    audioRef.current.pause()
-    setIsPlaying(false)
-}
-
-const togglePlay = isPlaying ? handlePause : handlePlay
-
-useEffect(() => {
-  if (audioRef.current) {
-    handlePlay()
-  }
-}, [activeTrack])
 
   return (
   <>
@@ -60,18 +62,19 @@ useEffect(() => {
       <S.Container>
       <>
                         <AppRoutes
-                            user={localStorage.getItem('user')}
-                            setTracks={setTracks}
-                            isLoading={isLoading}
-                            setIsLoading={setIsLoading}
-                            isPlayerVisible={isPlayerVisible}
-                            setIsPlayerVisible={setIsPlayerVisible}
-                            loadingTracksError={loadingTracksError}
-                            setIsPlaying={setIsPlaying}
-                            isPlaying={isPlaying}
-                            togglePlay={togglePlay}
+                           user={localStorage.getItem('user')}
+                           isLoading={isLoading}
+                           setIsLoading={setIsLoading}
+                           isPlayerVisible={isPlayerVisible}
+                           setIsPlayerVisible={setIsPlayerVisible}
+                           loadingTracksError={loadingTracksError}
+                           togglePlay={togglePlay}
                         />
-                        {AudioPlayer({ isPlaying, setIsPlaying, isPlayerVisible, isLoading, activeTrack,audioRef, togglePlay, })}
+                        {AudioPlayer({ audioRef,
+                                togglePlay,
+                                isPlaying,
+                                isPlayerVisible,
+                                isLoading, })}
                     </>
       </S.Container>
     </S.Wrapper>

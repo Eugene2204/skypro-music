@@ -9,33 +9,33 @@ import { playNextTrack, playPrevTrack, setIsShuffled } from '../../store/slices.
 
 export const AudioPlayer = ({ isPlayerVisible, isLoading, audioRef, togglePlay, isPlaying, }) => {
 
-  const [isLooped, setIsLooped] = useState(false)
-  const [currentTime, setCurrentTime] = useState(0)
-  const [currentVolume, setCurrentVolume] = useState(0.1)
+    const [isLooped, setIsLooped] = useState(false)
+    const [currentTime, setCurrentTime] = useState(0)
+    const [currentVolume, setCurrentVolume] = useState(0.5)
 
-  const activeTrack = useSelector((state) => state.tracks.activeTrack)
-  const isShuffled = useSelector((state) => state.tracks.isShuffled)
-  const dispatch = useDispatch()
-  const progressBarRef = useRef(null)
-  const volumeBarRef = useRef(null)
-  const duration = audioRef.current ? audioRef.current.duration : 0;
-  
-  const handleLoop = () => {
-      audioRef.current.loop = true
-      setIsLooped(true)
-  }
+    const activeTrack = useSelector((state) => state.tracks.activeTrack)
+    const isShuffled = useSelector((state) => state.tracks.isShuffled)
+    const dispatch = useDispatch()
+    const progressBarRef = useRef(null)
+    const volumeBarRef = useRef(null)
+    const duration = audioRef.current ? audioRef.current.duration : 0
 
-  const handleUnloop = () => {
-      audioRef.current.loop = false
-      setIsLooped(false)
-  }
+    const handleLoop = () => {
+        audioRef.current.loop = true
+        setIsLooped(true)
+    }
 
-  const toggleLoop = isLooped ? handleUnloop : handleLoop
+    const handleUnloop = () => {
+        audioRef.current.loop = false
+        setIsLooped(false)
+    }
+
+    const toggleLoop = isLooped ? handleUnloop : handleLoop
 
     return (
       isPlayerVisible && (
         <>
-         <audio
+        <audio
                    controls="controls"
                     src={activeTrack.track_file}
                     ref={audioRef}
@@ -43,8 +43,9 @@ export const AudioPlayer = ({ isPlayerVisible, isLoading, audioRef, togglePlay, 
                     onEnded={() => dispatch(playNextTrack())}
                     onTimeUpdate={() => {
                         setCurrentTime(audioRef.current.currentTime)
-                    }}
-                ></audio>
+                    }}>
+
+        </audio>
                 <S.TrackTime>
                   {duration && ConvertTime(currentTime)} / {duration && ConvertTime(duration)}
                 </S.TrackTime>
